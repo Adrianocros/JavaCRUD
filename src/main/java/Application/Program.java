@@ -32,11 +32,12 @@ public class Program {
         }catch (SQLException e){
             e.printStackTrace();
         }
-
-
-
-
-
+        //Fechando as conexões
+        finally {
+            DB.closeResultSet(rs);
+            DB.closeStatement(st);
+            DB.closeConnection();
+        }
 
     }
 }
