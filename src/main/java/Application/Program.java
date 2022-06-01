@@ -1,40 +1,47 @@
 package Application;
 
 import db.DB;
+import db.DBException;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 public class Program {
     public static void main(String[] args) {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         //Criando a  conexao
         Connection conn = null;
-        //Preparar consulta SQL
-        Statement st = null;
-        //Traz o resultado
-        ResultSet rs = null;
+        PreparedStatement st = null;
 
-        try{
-            //conectando ao banco
+        try {
             conn = DB.getConnection();
+            //Comando SQL
+            st = conn.prepareStatement(
+                    "INSERT INTO seller "
+                    + "(Name,Email,BirthDate,BaseSalary, DepartmentID)"
+                    + "VALUES "
+                    +"(?,?,?,?,?)");
+            //Alerando os ? pelos valor
+            st.setString(1,"Maria Julia");
+            st.setString(2,"maria@gmail.com");
+            st.setDate(3,new java.sql.Date(sdf.parse("22/04/1985").getTime()));
+            st.setDouble(4,3500.0);
+            st.setInt(5,4);
 
-            st = conn.createStatement();
-            //Consuta ao banco
-            rs = st.executeQuery("select * from department");
+            //Para saber quantas linhas foram alteras
+           int rowsAffected = st.executeUpdate();
 
-            //Percorrendo a tabela e trazendo o ID e Name
-            while (rs.next()){
-                System.out.println(rs.getInt("Id") + " - " + rs.getString("Name"));
-            }
+            System.out.println("Update! - Foram alterados: " + rowsAffected + " linhas");
 
         }catch (SQLException e){
             e.printStackTrace();
+
+        }catch (ParseException e){
+            e.printStackTrace();
         }
-        //Fechando as conexões
+        //Fechando a conexao
         finally {
-            DB.closeResultSet(rs);
             DB.closeStatement(st);
             DB.closeConnection();
         }
