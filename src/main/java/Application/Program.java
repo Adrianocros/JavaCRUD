@@ -16,7 +16,7 @@ public class Program {
 
         try {
             conn = DB.getConnection();
-            //Comando SQL
+            /*//Comando SQL
             st = conn.prepareStatement(
                     "INSERT INTO seller "
                     + "(Name,Email,BirthDate,BaseSalary, DepartmentID)"
@@ -29,6 +29,11 @@ public class Program {
             st.setDate(3,new java.sql.Date(sdf.parse("02/10/1999").getTime()));
             st.setDouble(4,6500.0);
             st.setInt(5,1);
+            */
+
+            //Inserindo dois registros na tabela
+            st = conn.prepareStatement("INSERT INTO department (Name) values ('Tecnologia'),('Desenvolvimento')",
+                    Statement.RETURN_GENERATED_KEYS);
 
             //Para saber quantas linhas foram alteras
            int rowsAffected = st.executeUpdate();
@@ -49,9 +54,10 @@ public class Program {
         }catch (SQLException e){
             e.printStackTrace();
 
-        }catch (ParseException e){
-            e.printStackTrace();
         }
+//        catch (ParseException e){
+//            e.printStackTrace();
+//        }
         //Fechando a conexao
         finally {
             DB.closeStatement(st);
