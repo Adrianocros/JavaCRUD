@@ -2,6 +2,7 @@ package Application;
 
 import db.DB;
 import db.DBException;
+import db.DBIntegrityException;
 
 import java.sql.*;
 import java.text.ParseException;
@@ -15,28 +16,25 @@ public class Program {
 
         try {
             conn = DB.getConnection();
-            //Atualizar registro do banco
+            //Deletando registro do banco
             st = conn.prepareStatement(
-                    "UPDATE seller "
-                    + "SET BaseSalary = BaseSalary + ? "
-                    + "WHERE "
-                    + "(DepartmentID = ?)");
+                "DELETE FROM department "
+                + "WHERE "
+                + "Id = ?");
 
-            st.setDouble(1,200.0);
-            st.setInt(2,1);
+            st.setInt(1,6);
+
 
             int rowsAffected = st.executeUpdate();
-            System.out.println("UPDATE realizado, " + rowsAffected + " linhas");
+            System.out.println("DELET realizado, " + rowsAffected + " linhas");
 
         }catch (SQLException e){
-            e.printStackTrace();
+            throw new DBIntegrityException(e.getMessage());
         }
         finally {
             DB.closeStatement(st);
             DB.closeConnection();
 
         }
-
-
     }
 }
